@@ -9,3 +9,8 @@ export interface LoginResponse {
     token: string;
     user: User;
 }
+
+export interface RegisterResponse {
+    message: string;
+    data: User;
+}
