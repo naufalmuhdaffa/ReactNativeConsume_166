@@ -3,9 +3,9 @@ import { LoginResponse, RegisterResponse } from "../../domain/entities/Auth";
 import apiClient from "../api/apiClient";
 
 export class AuthRepositoryImpl implements IAuthRepository {
-    async login(username: string, password: string): Promise<LoginResponse> {
+    async login(email: string, password: string): Promise<LoginResponse> {
         const response = await apiClient.post<LoginResponse>("/auth/login", {
-            username,
+            email,
             password,
         });
         return response.data;
