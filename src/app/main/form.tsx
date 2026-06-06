@@ -139,6 +139,15 @@ export default function AddHewanScreen() {
               <ThemedText style={styles.submitButtonText}>Simpan ke Database</ThemedText>
             )}
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={navigateToMain}
+            disabled={loading}
+            activeOpacity={0.7}
+          >
+            <ThemedText style={styles.cancelButtonText}>Batal</ThemedText>
+          </TouchableOpacity>
         </ThemedView>
 
       </SafeAreaView>
@@ -203,5 +212,18 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   submitButtonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+  cancelButton: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#334155',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   errorText: { color: '#ef4444', textAlign: 'center', fontWeight: '600' },
 });
