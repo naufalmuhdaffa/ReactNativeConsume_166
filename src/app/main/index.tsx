@@ -17,6 +17,13 @@ export default function DashboardScreen() {
     fetchHewan();
   }, [fetchHewan]);
 
+  const openEditForm = (id: number) => {
+    router.push({
+      pathname: '/main/form',
+      params: { id: id.toString() },
+    });
+  };
+
   const confirmDelete = (id: number, namaHewan: string) => {
     Alert.alert(
       'Konfirmasi Hapus',
@@ -76,12 +83,21 @@ export default function DashboardScreen() {
                 </ThemedText>
               </ThemedView>
 
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => confirmDelete(item.id!, item.nama)}
-              >
-                <ThemedText style={styles.deleteButtonText}>Hapus</ThemedText>
-              </TouchableOpacity>
+              <ThemedView style={styles.cardActions}>
+                <TouchableOpacity
+                  style={styles.editButton}
+                  onPress={() => openEditForm(item.id!)}
+                >
+                  <ThemedText style={styles.editButtonText}>Edit</ThemedText>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => confirmDelete(item.id!, item.nama)}
+                >
+                  <ThemedText style={styles.deleteButtonText}>Hapus</ThemedText>
+                </TouchableOpacity>
+              </ThemedView>
             </ThemedView>
           )}
         />
@@ -166,6 +182,24 @@ const styles = StyleSheet.create({
   statusSold: {
     color: '#94a3b8',
     fontWeight: '600',
+  },
+  cardActions: {
+    gap: 8,
+    backgroundColor: 'transparent',
+  },
+  editButton: {
+    backgroundColor: '#e0f2fe',
+    borderWidth: 1,
+    borderColor: '#bae6fd',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  editButtonText: {
+    color: '#0369a1',
+    fontWeight: '600',
+    fontSize: 13,
   },
   deleteButton: {
     backgroundColor: '#ffffff',
