@@ -1,10 +1,12 @@
+export type HewanStatus = 'tersedia' | 'terjual';
+
 export interface Hewan {
     id?: number;
     nama: string;
     jenis: string;
     tanggal_lahir?: string;
     harga: number;
-    status?: 'tersedia' | 'terjual';
+    status?: HewanStatus;
     createdAt?: string;
     updatedAt?: string;
 }
