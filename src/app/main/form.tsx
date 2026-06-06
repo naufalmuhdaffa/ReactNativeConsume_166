@@ -9,8 +9,29 @@ import { DEFAULT_HEWAN_STATUS, HEWAN_STATUS_OPTIONS, getHewanStatusLabel } from 
 import type { HewanStatus } from '../../domain/entities/Hewan';
 import { useHewanViewModel } from '../../hooks/useHewanViewModel';
 
-export default function AddHewanScreen() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+const formatDateString = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const parseDateString = (value?: string) => {
+  if (!value) return new Date();
+
+  const parsedDate = new Date(value);
+  return Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+};
+
+export default function HewanFormScreen() {
+  const { id } = useLocalSearchParams();
+  const router = useRouter();
+
+  const rawId = Array.isArray(id) ? id[0] : id;
+  const parsedId = typeof rawId === 'string' ? Number(rawId) : null;
+  const hewanId = parsedId && Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null;
+  const isEditMode = hewanId !== null;
+
   const [nama, setNama] = useState('');
   const [jenis, setJenis] = useState('');
   const [harga, setHarga] = useState('');
@@ -20,41 +41,17 @@ export default function AddHewanScreen() {
   const [showStatusOptions, setShowStatusOptions] = useState(false);
 
   const { addHewan, updateHewan, getHewanById, loading, error } = useHewanViewModel();
-  const router = useRouter();
-  const hewanId = id ? Number(id) : null;
-  const isEditMode = typeof hewanId === 'number' && Number.isInteger(hewanId) && hewanId > 0;
-
-  const parseDateString = (value?: string) => {
-    if (!value) return new Date();
-
-    const parsedDate = new Date(value);
-    return Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
-  };
 
   const navigateToMain = () => {
     router.replace('/main');
   };
 
-  const formatDateString = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const onChangeDate = (_event: DateTimePickerEvent, selectedDate?: Date) => {
-    setShowDatePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setTanggalLahir(selectedDate);
-    }
-  };
-
   useEffect(() => {
-    if (!isEditMode || !hewanId) return;
+    if (!hewanId) return;
 
     let isMounted = true;
 
-    const loadHewanDetail = async () => {
+    const loadHewan = async () => {
       const selectedHewan = await getHewanById(hewanId);
       if (!selectedHewan || !isMounted) return;
 
@@ -65,12 +62,19 @@ export default function AddHewanScreen() {
       setStatus(selectedHewan.status ?? DEFAULT_HEWAN_STATUS);
     };
 
-    loadHewanDetail();
+    loadHewan();
 
     return () => {
       isMounted = false;
     };
-  }, [getHewanById, hewanId, isEditMode]);
+  }, [getHewanById, hewanId]);
+
+  const onChangeDate = (_event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setTanggalLahir(selectedDate);
+    }
+  };
 
   const onSubmit = () => {
     const cleanNama = nama.trim();

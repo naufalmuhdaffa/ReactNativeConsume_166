@@ -40,6 +40,7 @@ export const useHewanViewModel = () => {
 
   const addHewan = async (payload: HewanMutationPayload, onSuccess: () => void) => {
     setLoading(true);
+    setError(null);
     try {
       const res = await hewanRepo.create(payload);
       if (res.success) {
