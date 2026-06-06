@@ -4,6 +4,7 @@ import { Alert, FlatList, RefreshControl, StyleSheet, TouchableOpacity } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
+import { getHewanStatusLabel } from '../../constants/hewan';
 import { useAuthViewModel } from '../../hooks/useAuthViewModel';
 import { useHewanViewModel } from '../../hooks/useHewanViewModel';
 
@@ -43,7 +44,7 @@ export default function DashboardScreen() {
       <SafeAreaView style={styles.safeArea}>
 
         <ThemedView style={styles.header}>
-          <ThemedText type="title">Daftar Ternak 🐄</ThemedText>
+          <ThemedText type="title">Daftar Ternak</ThemedText>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <ThemedText style={styles.logoutText}>Logout</ThemedText>
           </TouchableOpacity>
@@ -68,7 +69,7 @@ export default function DashboardScreen() {
                   {item.nama}
                 </ThemedText>
                 <ThemedText style={styles.animalMeta}>
-                  {item.jenis} • <ThemedText style={item.status === 'tersedia' ? styles.statusActive : styles.statusSold}>{item.status}</ThemedText>
+                  {item.jenis} - <ThemedText style={item.status === 'tersedia' ? styles.statusActive : styles.statusSold}>{getHewanStatusLabel(item.status)}</ThemedText>
                 </ThemedText>
                 <ThemedText style={styles.animalPrice}>
                   Rp {item.harga.toLocaleString('id-ID')}
