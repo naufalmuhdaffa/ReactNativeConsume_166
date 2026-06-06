@@ -5,6 +5,8 @@ import { ActivityIndicator, Alert, Platform, StyleSheet, TextInput, TouchableOpa
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
+import { DEFAULT_HEWAN_STATUS } from '../../constants/hewan';
+import type { HewanStatus } from '../../domain/entities/Hewan';
 import { useHewanViewModel } from '../../hooks/useHewanViewModel';
 
 export default function AddHewanScreen() {
@@ -13,6 +15,7 @@ export default function AddHewanScreen() {
   const [jenis, setJenis] = useState('');
   const [harga, setHarga] = useState('');
   const [tanggalLahir, setTanggalLahir] = useState(new Date());
+  const [status, setStatus] = useState<HewanStatus>(DEFAULT_HEWAN_STATUS);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { addHewan, getHewanById, loading, error } = useHewanViewModel();
@@ -58,6 +61,7 @@ export default function AddHewanScreen() {
       setJenis(selectedHewan.jenis);
       setHarga(String(selectedHewan.harga));
       setTanggalLahir(parseDateString(selectedHewan.tanggal_lahir));
+      setStatus(selectedHewan.status ?? DEFAULT_HEWAN_STATUS);
     };
 
     loadHewanDetail();
@@ -92,7 +96,7 @@ export default function AddHewanScreen() {
       jenis: cleanJenis,
       harga: numericHarga,
       tanggal_lahir: formatDateString(tanggalLahir),
-      status: 'tersedia'
+      status,
     }, () => {
       navigateToMain();
     });
