@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { HewanRepositoryImpl } from '../data/repositories/HewanRepositoryImpl';
-import { Hewan } from '../domain/entities/Hewan';
+import { Hewan, HewanMutationPayload } from '../domain/entities/Hewan';
 
 const hewanRepo = new HewanRepositoryImpl();
 
@@ -38,7 +38,7 @@ export const useHewanViewModel = () => {
     }
   }, []);
 
-  const addHewan = async (payload: Omit<Hewan, 'id'>, onSuccess: () => void) => {
+  const addHewan = async (payload: HewanMutationPayload, onSuccess: () => void) => {
     setLoading(true);
     try {
       const res = await hewanRepo.create(payload);
@@ -48,6 +48,22 @@ export const useHewanViewModel = () => {
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Gagal menambahkan hewan');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateHewan = async (id: number, payload: HewanMutationPayload, onSuccess: () => void) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await hewanRepo.update(id, payload);
+      if (res.success) {
+        await fetchHewan();
+        onSuccess();
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Gagal memperbarui hewan');
     } finally {
       setLoading(false);
     }
@@ -64,5 +80,5 @@ export const useHewanViewModel = () => {
     }
   };
 
-  return { hewanList, loading, error, fetchHewan, getHewanById, addHewan, deleteHewan };
+  return { hewanList, loading, error, fetchHewan, getHewanById, addHewan, updateHewan, deleteHewan };
 };
