@@ -71,7 +71,15 @@ export default function AddHewanScreen() {
       <SafeAreaView style={styles.safeArea}>
 
         <ThemedView style={styles.header}>
-          <ThemedText type="title">Tambah Ternak Baru</ThemedText>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={navigateToMain}
+            disabled={loading}
+            activeOpacity={0.7}
+          >
+            <ThemedText style={styles.backButtonText}>Kembali</ThemedText>
+          </TouchableOpacity>
+          <ThemedText type="title" style={styles.headerTitle}>Tambah Ternak Baru</ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.form}>
@@ -141,7 +149,28 @@ export default function AddHewanScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safeArea: { flex: 1, paddingHorizontal: 24 },
-  header: { marginVertical: 24 },
+  header: {
+    marginVertical: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerTitle: {
+    flex: 1,
+  },
+  backButton: {
+    backgroundColor: '#f1f5f9',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  backButtonText: {
+    color: '#334155',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   form: { gap: 16 },
   input: {
     backgroundColor: '#f8fafc',
