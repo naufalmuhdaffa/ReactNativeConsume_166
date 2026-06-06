@@ -1,5 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Platform, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import { ThemedView } from '../../components/ThemedView';
 import { useHewanViewModel } from '../../hooks/useHewanViewModel';
 
 export default function AddHewanScreen() {
+  const { id } = useLocalSearchParams<{ id?: string }>();
   const [nama, setNama] = useState('');
   const [jenis, setJenis] = useState('');
   const [harga, setHarga] = useState('');
@@ -16,6 +17,8 @@ export default function AddHewanScreen() {
 
   const { addHewan, loading, error } = useHewanViewModel();
   const router = useRouter();
+  const hewanId = id ? Number(id) : null;
+  const isEditMode = typeof hewanId === 'number' && Number.isInteger(hewanId) && hewanId > 0;
 
   const navigateToMain = () => {
     router.replace('/main');
@@ -79,7 +82,9 @@ export default function AddHewanScreen() {
           >
             <ThemedText style={styles.backButtonText}>Kembali</ThemedText>
           </TouchableOpacity>
-          <ThemedText type="title" style={styles.headerTitle}>Tambah Ternak Baru</ThemedText>
+          <ThemedText type="title" style={styles.headerTitle}>
+            {isEditMode ? 'Edit Ternak' : 'Tambah Ternak Baru'}
+          </ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.form}>
