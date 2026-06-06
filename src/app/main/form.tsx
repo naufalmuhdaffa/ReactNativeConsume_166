@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
@@ -15,10 +15,17 @@ export default function AddHewanScreen() {
   const [tanggalLahir, setTanggalLahir] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const { addHewan, loading, error } = useHewanViewModel();
+  const { addHewan, getHewanById, loading, error } = useHewanViewModel();
   const router = useRouter();
   const hewanId = id ? Number(id) : null;
   const isEditMode = typeof hewanId === 'number' && Number.isInteger(hewanId) && hewanId > 0;
+
+  const parseDateString = (value?: string) => {
+    if (!value) return new Date();
+
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+  };
 
   const navigateToMain = () => {
     router.replace('/main');
@@ -37,6 +44,28 @@ export default function AddHewanScreen() {
       setTanggalLahir(selectedDate);
     }
   };
+
+  useEffect(() => {
+    if (!isEditMode || !hewanId) return;
+
+    let isMounted = true;
+
+    const loadHewanDetail = async () => {
+      const selectedHewan = await getHewanById(hewanId);
+      if (!selectedHewan || !isMounted) return;
+
+      setNama(selectedHewan.nama);
+      setJenis(selectedHewan.jenis);
+      setHarga(String(selectedHewan.harga));
+      setTanggalLahir(parseDateString(selectedHewan.tanggal_lahir));
+    };
+
+    loadHewanDetail();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [getHewanById, hewanId, isEditMode]);
 
   const onSubmit = () => {
     const cleanNama = nama.trim();
