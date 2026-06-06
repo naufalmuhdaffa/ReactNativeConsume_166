@@ -17,6 +17,10 @@ export default function AddHewanScreen() {
   const { addHewan, loading, error } = useHewanViewModel();
   const router = useRouter();
 
+  const navigateToMain = () => {
+    router.replace('/main');
+  };
+
   const formatDateString = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -58,7 +62,7 @@ export default function AddHewanScreen() {
       tanggal_lahir: formatDateString(tanggalLahir),
       status: 'tersedia'
     }, () => {
-      router.back();
+      navigateToMain();
     });
   };
 
