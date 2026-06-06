@@ -11,6 +11,14 @@ export interface Hewan {
     updatedAt?: string;
 }
 
+export type HewanMutationPayload = {
+    nama: string;
+    jenis: string;
+    tanggal_lahir: string;
+    harga: number;
+    status: HewanStatus;
+};
+
 export interface APIResponse<T> {
     success: boolean;
     message: string;
