@@ -19,7 +19,7 @@ export default function AddHewanScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStatusOptions, setShowStatusOptions] = useState(false);
 
-  const { addHewan, getHewanById, loading, error } = useHewanViewModel();
+  const { addHewan, updateHewan, getHewanById, loading, error } = useHewanViewModel();
   const router = useRouter();
   const hewanId = id ? Number(id) : null;
   const isEditMode = typeof hewanId === 'number' && Number.isInteger(hewanId) && hewanId > 0;
@@ -92,15 +92,20 @@ export default function AddHewanScreen() {
       return;
     }
 
-    addHewan({
+    const payload = {
       nama: cleanNama,
       jenis: cleanJenis,
       harga: numericHarga,
       tanggal_lahir: formatDateString(tanggalLahir),
       status,
-    }, () => {
-      navigateToMain();
-    });
+    };
+
+    if (isEditMode && hewanId) {
+      updateHewan(hewanId, payload, navigateToMain);
+      return;
+    }
+
+    addHewan(payload, navigateToMain);
   };
 
   return (
