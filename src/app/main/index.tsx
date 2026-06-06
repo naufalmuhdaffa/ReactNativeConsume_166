@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { Alert, FlatList, RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
@@ -13,9 +13,11 @@ export default function DashboardScreen() {
   const { handleLogout } = useAuthViewModel();
   const router = useRouter();
 
-  useEffect(() => {
-    fetchHewan();
-  }, [fetchHewan]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchHewan();
+    }, [fetchHewan])
+  );
 
   const openEditForm = (id: number) => {
     router.push({
