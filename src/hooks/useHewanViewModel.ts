@@ -22,6 +22,22 @@ export const useHewanViewModel = () => {
     }
   }, []);
 
+  const getHewanById = useCallback(async (id: number): Promise<Hewan | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await hewanRepo.getById(id);
+      if (res.success) return res.data;
+      setError(res.message || 'Data hewan tidak ditemukan');
+      return null;
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Gagal mengambil detail hewan');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const addHewan = async (payload: Omit<Hewan, 'id'>, onSuccess: () => void) => {
     setLoading(true);
     try {
@@ -48,5 +64,5 @@ export const useHewanViewModel = () => {
     }
   };
 
-  return { hewanList, loading, error, fetchHewan, addHewan, deleteHewan };
+  return { hewanList, loading, error, fetchHewan, getHewanById, addHewan, deleteHewan };
 };
