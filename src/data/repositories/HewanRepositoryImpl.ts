@@ -1,5 +1,5 @@
 import apiClient from "../api/apiClient";
-import { Hewan, APIResponse } from "../../domain/entities/Hewan";
+import { Hewan, APIResponse, HewanMutationPayload } from "../../domain/entities/Hewan";
 import { IHewanRepository } from "../../domain/repositories/IHewanRepository";
 
 export class HewanRepositoryImpl implements IHewanRepository {
@@ -13,12 +13,12 @@ export class HewanRepositoryImpl implements IHewanRepository {
         return response.data;
     }
 
-    async create(hewan: Omit<Hewan, "id">): Promise<APIResponse<Hewan>> {
+    async create(hewan: HewanMutationPayload): Promise<APIResponse<Hewan>> {
         const response = await apiClient.post<APIResponse<Hewan>>("/hewan", hewan);
         return response.data;
     }
 
-    async update(id: number, hewan: Partial<Hewan>): Promise<APIResponse<Hewan>> {
+    async update(id: number, hewan: Partial<HewanMutationPayload>): Promise<APIResponse<Hewan>> {
         const response = await apiClient.put<APIResponse<Hewan>>(`/hewan/${id}`, hewan);
         return response.data;
     }
