@@ -5,7 +5,7 @@ import { ActivityIndicator, Alert, Platform, StyleSheet, TextInput, TouchableOpa
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
-import { DEFAULT_HEWAN_STATUS } from '../../constants/hewan';
+import { DEFAULT_HEWAN_STATUS, HEWAN_STATUS_OPTIONS, getHewanStatusLabel } from '../../constants/hewan';
 import type { HewanStatus } from '../../domain/entities/Hewan';
 import { useHewanViewModel } from '../../hooks/useHewanViewModel';
 
@@ -17,6 +17,7 @@ export default function AddHewanScreen() {
   const [tanggalLahir, setTanggalLahir] = useState(new Date());
   const [status, setStatus] = useState<HewanStatus>(DEFAULT_HEWAN_STATUS);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showStatusOptions, setShowStatusOptions] = useState(false);
 
   const { addHewan, getHewanById, loading, error } = useHewanViewModel();
   const router = useRouter();
@@ -170,6 +171,47 @@ export default function AddHewanScreen() {
             />
           )}
 
+          <ThemedView style={styles.dropdownGroup}>
+            <TouchableOpacity
+              style={styles.dropdownButton}
+              onPress={() => setShowStatusOptions((current) => !current)}
+              activeOpacity={0.7}
+            >
+              <ThemedText style={styles.dropdownText}>
+                Status: {getHewanStatusLabel(status)}
+              </ThemedText>
+              <ThemedText style={styles.dropdownArrow}>v</ThemedText>
+            </TouchableOpacity>
+
+            {showStatusOptions && (
+              <ThemedView style={styles.dropdownMenu}>
+                {HEWAN_STATUS_OPTIONS.map((option) => (
+                  <TouchableOpacity
+                    key={option.value}
+                    style={[
+                      styles.dropdownOption,
+                      option.value === status && styles.dropdownOptionActive,
+                    ]}
+                    onPress={() => {
+                      setStatus(option.value);
+                      setShowStatusOptions(false);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.dropdownOptionText,
+                        option.value === status && styles.dropdownOptionTextActive,
+                      ]}
+                    >
+                      {option.label}
+                    </ThemedText>
+                  </TouchableOpacity>
+                ))}
+              </ThemedView>
+            )}
+          </ThemedView>
+
           <TouchableOpacity style={styles.submitButton} onPress={onSubmit} disabled={loading}>
             {loading ? (
               <ActivityIndicator color="#fff" />
@@ -241,6 +283,52 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     color: '#334155',
+  },
+  dropdownGroup: {
+    gap: 8,
+    backgroundColor: 'transparent',
+  },
+  dropdownButton: {
+    backgroundColor: '#f8fafc',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#334155',
+  },
+  dropdownArrow: {
+    color: '#64748b',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  dropdownMenu: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  dropdownOption: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  dropdownOptionActive: {
+    backgroundColor: '#e0f2fe',
+  },
+  dropdownOptionText: {
+    fontSize: 16,
+    color: '#334155',
+  },
+  dropdownOptionTextActive: {
+    color: '#0369a1',
+    fontWeight: '700',
   },
   submitButton: {
     backgroundColor: '#0284c7',
