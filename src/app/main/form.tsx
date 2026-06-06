@@ -1,7 +1,7 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '../../components/ThemedText';
 import { ThemedView } from '../../components/ThemedView';
@@ -42,7 +42,7 @@ export default function AddHewanScreen() {
     return `${year}-${month}-${day}`;
   };
 
-  const onChangeDate = (event: any, selectedDate?: Date) => {
+  const onChangeDate = (_event: DateTimePickerEvent, selectedDate?: Date) => {
     setShowDatePicker(Platform.OS === 'ios');
     if (selectedDate) {
       setTanggalLahir(selectedDate);
@@ -111,130 +111,132 @@ export default function AddHewanScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-
-        <ThemedView style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={navigateToMain}
-            disabled={loading}
-            activeOpacity={0.7}
-          >
-            <ThemedText style={styles.backButtonText}>Kembali</ThemedText>
-          </TouchableOpacity>
-          <ThemedText type="title" style={styles.headerTitle}>
-            {isEditMode ? 'Edit Ternak' : 'Tambah Ternak Baru'}
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedView style={styles.form}>
-          {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
-
-          <TextInput
-            style={styles.input}
-            placeholder="Nama Hewan"
-            placeholderTextColor="#94a3b8"
-            value={nama}
-            onChangeText={setNama}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Jenis (contoh: Sapi Limosin)"
-            placeholderTextColor="#94a3b8"
-            value={jenis}
-            onChangeText={setJenis}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Harga (Rupiah)"
-            placeholderTextColor="#94a3b8"
-            keyboardType="number-pad"
-            value={harga}
-            onChangeText={(text) => {
-              setHarga(text.replace(/[^0-9]/g, ''));
-            }}
-          />
-
-          <TouchableOpacity
-            style={styles.dateInputButton}
-            onPress={() => setShowDatePicker(true)}
-            activeOpacity={0.7}
-          >
-            <ThemedText style={styles.dateText}>
-              Tanggal Lahir: {formatDateString(tanggalLahir)}
-            </ThemedText>
-          </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={tanggalLahir}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onValueChange={onChangeDate}
-              maximumDate={new Date()}
-            />
-          )}
-
-          <ThemedView style={styles.dropdownGroup}>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <ThemedView style={styles.header}>
             <TouchableOpacity
-              style={styles.dropdownButton}
-              onPress={() => setShowStatusOptions((current) => !current)}
+              style={styles.backButton}
+              onPress={navigateToMain}
+              disabled={loading}
               activeOpacity={0.7}
             >
-              <ThemedText style={styles.dropdownText}>
-                Status: {getHewanStatusLabel(status)}
-              </ThemedText>
-              <ThemedText style={styles.dropdownArrow}>v</ThemedText>
+              <ThemedText style={styles.backButtonText}>Kembali</ThemedText>
             </TouchableOpacity>
-
-            {showStatusOptions && (
-              <ThemedView style={styles.dropdownMenu}>
-                {HEWAN_STATUS_OPTIONS.map((option) => (
-                  <TouchableOpacity
-                    key={option.value}
-                    style={[
-                      styles.dropdownOption,
-                      option.value === status && styles.dropdownOptionActive,
-                    ]}
-                    onPress={() => {
-                      setStatus(option.value);
-                      setShowStatusOptions(false);
-                    }}
-                    activeOpacity={0.7}
-                  >
-                    <ThemedText
-                      style={[
-                        styles.dropdownOptionText,
-                        option.value === status && styles.dropdownOptionTextActive,
-                      ]}
-                    >
-                      {option.label}
-                    </ThemedText>
-                  </TouchableOpacity>
-                ))}
-              </ThemedView>
-            )}
+            <ThemedText type="title" style={styles.headerTitle}>
+              {isEditMode ? 'Edit Ternak' : 'Tambah Ternak Baru'}
+            </ThemedText>
           </ThemedView>
 
-          <TouchableOpacity style={styles.submitButton} onPress={onSubmit} disabled={loading}>
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <ThemedText style={styles.submitButtonText}>Simpan ke Database</ThemedText>
+          <ThemedView style={styles.form}>
+            {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
+
+            <TextInput
+              style={styles.input}
+              placeholder="Nama Hewan"
+              placeholderTextColor="#94a3b8"
+              value={nama}
+              onChangeText={setNama}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Jenis (contoh: Sapi Limosin)"
+              placeholderTextColor="#94a3b8"
+              value={jenis}
+              onChangeText={setJenis}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Harga (Rupiah)"
+              placeholderTextColor="#94a3b8"
+              keyboardType="number-pad"
+              value={harga}
+              onChangeText={(text) => {
+                setHarga(text.replace(/[^0-9]/g, ''));
+              }}
+            />
+
+            <TouchableOpacity
+              style={styles.dateInputButton}
+              onPress={() => setShowDatePicker(true)}
+              activeOpacity={0.7}
+            >
+              <ThemedText style={styles.dateText}>
+                Tanggal Lahir: {formatDateString(tanggalLahir)}
+              </ThemedText>
+            </TouchableOpacity>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={tanggalLahir}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={onChangeDate}
+                maximumDate={new Date()}
+              />
             )}
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={navigateToMain}
-            disabled={loading}
-            activeOpacity={0.7}
-          >
-            <ThemedText style={styles.cancelButtonText}>Batal</ThemedText>
-          </TouchableOpacity>
-        </ThemedView>
+            <ThemedView style={styles.dropdownGroup}>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setShowStatusOptions((current) => !current)}
+                activeOpacity={0.7}
+              >
+                <ThemedText style={styles.dropdownText}>
+                  Status: {getHewanStatusLabel(status)}
+                </ThemedText>
+                <ThemedText style={styles.dropdownArrow}>v</ThemedText>
+              </TouchableOpacity>
 
+              {showStatusOptions && (
+                <ThemedView style={styles.dropdownMenu}>
+                  {HEWAN_STATUS_OPTIONS.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[
+                        styles.dropdownOption,
+                        option.value === status && styles.dropdownOptionActive,
+                      ]}
+                      onPress={() => {
+                        setStatus(option.value);
+                        setShowStatusOptions(false);
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <ThemedText
+                        style={[
+                          styles.dropdownOptionText,
+                          option.value === status && styles.dropdownOptionTextActive,
+                        ]}
+                      >
+                        {option.label}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  ))}
+                </ThemedView>
+              )}
+            </ThemedView>
+
+            <TouchableOpacity style={styles.submitButton} onPress={onSubmit} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <ThemedText style={styles.submitButtonText}>
+                  {isEditMode ? 'Simpan Perubahan' : 'Simpan ke Database'}
+                </ThemedText>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={navigateToMain}
+              disabled={loading}
+              activeOpacity={0.7}
+            >
+              <ThemedText style={styles.cancelButtonText}>Batal</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        </ScrollView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -242,7 +244,11 @@ export default function AddHewanScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { flex: 1, paddingHorizontal: 24 },
+  safeArea: { flex: 1 },
+  content: {
+    paddingHorizontal: 24,
+    paddingBottom: 32,
+  },
   header: {
     marginVertical: 24,
     flexDirection: 'row',
